@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
+import "cloudstate/eventing.proto";
+import "orders.proto";
+import "warehouse.proto";
+
+package com.acme.sunglasses.warehouse;
+
+service OrdersSubscriber {
+
+    // Subscribes to the orders topic.
+    //
+    // The result here is a stream. The reason for that is that we are doing a 1:many processing on the input stream,
+    // for each item, we are going to forward to the warehouse stock item for that. The return type of those calls is
+    // Product, hence the Product stream here, though that return value will be ignored.
+    rpc HandleOrder(com.acme.sunglasses.orders.Order) returns (stream Product) {
+        option (.cloudstate.eventing) = {
+            in: {
+                topic: "orders"
+            }
+        };
+    };
+}

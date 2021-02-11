@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package com.acme.sunglasses.orders;
+
+message Order {
+    string userID = 1;
+    string orderID = 2;
+    repeated OrderItem items = 3;
+}
+
+message OrderItem {
+    string productID = 1;
+    int32 quantity = 2;
+    float price = 3;
+}

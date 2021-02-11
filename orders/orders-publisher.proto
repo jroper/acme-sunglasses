@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+import "cloudstate/eventing.proto";
+import "orders.proto";
+
+package com.acme.sunglasses.orders;
+
+service OrdersPublisher {
+    // Publishes the orders event log to a topic called orders.
+    //
+    // The input type is google.protobuf.Any, this is needed because the persisted events are not protobuf, they are
+    // JSON. The output type is a protobuf Order. The output is also streamed, streamed allows us to output zero to
+    // many messages per input message, rather than 1:1 if it were unary. Technically all that's needed now is unary,
+    // but if we add other event types in future that we don't want to publish, this allows us to filter them out by
+    // emitting no messages when we receive it.
+    rpc HandleOrderEvent(google.protobuf.Any) returns (stream com.acme.sunglasses.orders.Order) {
+        option (.cloudstate.eventing) = {
+            in: {
+                event_log: "orders"
+            }
+            out: {
+                topic: "orders"
+            }
+        };
+    };
+}

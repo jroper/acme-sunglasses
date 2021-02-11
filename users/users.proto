@@ -17,8 +17,10 @@ message GetUser {
     string id = 1 [(.cloudstate.entity_key) = true];
 }
 
+// This message intentionally matches the structure of the orders event published by the orders service.
+// The order items field is not here because we're not interested in it - protobuf decoders will just ignore it.
 message AddOrder {
-    string id = 1 [(.cloudstate.entity_key) = true];
+    string userID = 1 [(.cloudstate.entity_key) = true];
     string orderID = 2;
 }
 
@@ -37,9 +39,10 @@ service Users {
     }
 
     rpc UpdateUserOrders (AddOrder) returns (AddOrder) {
-        option (google.api.http) = {
-            post: "/user/{id}/order",
-            body: "*"
+        option (.cloudstate.eventing) = {
+            in: {
+                topic: "orders"
+            }
         };
     }
 }

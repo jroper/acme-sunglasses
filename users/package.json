@@ -7,7 +7,7 @@
   "license": "MIT",
   "dependencies": {
     "@grpc/proto-loader": "^0.5.5",
-    "cloudstate": "0.0.3",
+    "cloudstate": "0.0.4",
     "google-protobuf": "^3.14.0",
     "grpc": "^1.24.4"
   },
